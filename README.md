@@ -1,1 +1,1 @@
-# counterfactual_regret
+# Counterfactual Regret
