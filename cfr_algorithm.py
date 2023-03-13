@@ -1,3 +1,4 @@
+from copy import deepcopy
 from typing import Type
 
 import numpy as np
@@ -9,6 +10,9 @@ from classes import Agent, InformationSet, KuhnPokerDealer
 def run_cfr(
     iset: Type[InformationSet],
     player: Type[Agent],
+    opponent: Type[
+        Agent
+    ],  # we require opponent strategy for turns where it is not players turn
     episode: int,
     arrival_prob_1: float,
     arrival_prob_2: float,
@@ -38,12 +42,22 @@ def run_cfr(
 
     iset_to_str = f"{str(iset.holding_card)}_{','.join([action.name[0] for action in iset.history])}"
 
-    if (iset_to_str not in player.strategy) and (
-        iset.active_player_label == player.label
-    ):
-        player.strategy[iset_to_str] = np.repeat(
-            1 / len(iset.legal_actions), len(iset.legal_actions)
-        )
+    def _set_strategy_if_not_exists_and_players_turn(p):
+        if (iset_to_str not in p.strategy) and (iset.active_player_label == p.label):
+            p.strategy[iset_to_str] = np.repeat(
+                1 / len(iset.legal_actions), len(iset.legal_actions)
+            )
+
+    opponent_dc = deepcopy(
+        opponent
+    )  # we want to make copy of opponent to get current episodes strategy. we don't want to update the opponent passed to function call
+    _set_strategy_if_not_exists_and_players_turn(player)
+    _set_strategy_if_not_exists_and_players_turn(opponent_dc)
+
+    if iset.active_player_label == player.label:
+        active_strategy = player.strategy[iset_to_str]
+    else:
+        active_strategy = opponent_dc.strategy[iset_to_str]
 
     for index, action in enumerate(iset.legal_actions):
         if iset.active_player_label == 1:
@@ -52,11 +66,13 @@ def run_cfr(
                 active_player_label=2,
                 history=iset.history + (action,),
             )
+
             cfv_action[index] = run_cfr(
                 next_iset,
                 player,
+                opponent,
                 episode,
-                player.strategy[iset_to_str][index] * arrival_prob_1,
+                active_strategy[index] * arrival_prob_1,
                 arrival_prob_2,
                 dealer,
             )
@@ -70,13 +86,14 @@ def run_cfr(
             cfv_action[index] = run_cfr(
                 next_iset,
                 player,
+                opponent,
                 episode,
                 arrival_prob_1,
-                player.strategy[iset_to_str][index] * arrival_prob_2,
+                active_strategy[index] * arrival_prob_2,
                 dealer,
             )
 
-    cfv = sum(player.strategy[iset_to_str] * cfv_action)
+    cfv = sum(active_strategy * cfv_action)
 
     def _check_strategy_or_regret_exists(p):
         if iset_to_str not in p.cumulative_regret:
@@ -134,8 +151,8 @@ def train_cfr(num_episodes: int):
 
         # we want cfr algorithm to save nodes in place inside players
         # like the players have memories which are represented by game nodes
-        run_cfr(initial_iset_1, agent_1, t, 1, 1, poker_dealer)
-        run_cfr(initial_iset_2, agent_2, t, 1, 1, poker_dealer)
+        run_cfr(initial_iset_1, agent_1, agent_2, t, 1, 1, poker_dealer)
+        run_cfr(initial_iset_2, agent_2, agent_1, t, 1, 1, poker_dealer)
         poker_dealer.reset_hand()
 
     return agent_1, agent_2
