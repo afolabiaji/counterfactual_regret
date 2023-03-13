@@ -38,7 +38,9 @@ def run_cfr(
 
     iset_to_str = f"{str(iset.holding_card)}_{','.join([action.name[0] for action in iset.history])}"
 
-    if iset_to_str not in player.strategy:
+    if (iset_to_str not in player.strategy) and (
+        iset.active_player_label == player.label
+    ):
         player.strategy[iset_to_str] = np.repeat(
             1 / len(iset.legal_actions), len(iset.legal_actions)
         )
@@ -100,8 +102,10 @@ def run_cfr(
                 iset_to_str
             ] + (arrival_prob_2 * player.strategy[iset_to_str])
 
-        if sum(player.cumulative_regret[iset_to_str]) > 0:
-            cumulative_regret = player.cumulative_regret[iset_to_str]
+        cumulative_regret = np.array(
+            list(map(lambda x: max(x, 0), player.cumulative_regret[iset_to_str]))
+        )
+        if sum(cumulative_regret) > 0:
             player.strategy[iset_to_str] = cumulative_regret / sum(cumulative_regret)
         else:
             player.strategy[iset_to_str] = np.repeat(
@@ -134,9 +138,4 @@ def train_cfr(num_episodes: int):
         run_cfr(initial_iset_2, agent_2, t, 1, 1, poker_dealer)
         poker_dealer.reset_hand()
 
-    return agent_1
-
-
-if __name__ == "__main__":
-    agent_1 = train_cfr(10000)
-    print(agent_1.memory)
+    return agent_1, agent_2

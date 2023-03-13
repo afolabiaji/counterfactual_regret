@@ -45,7 +45,7 @@ class InformationSet:
 
 
 class Agent:
-    def __init__(self, label):
+    def __init__(self, label: int):
         self.label: int = label
         self.card: Optional[int] = None  # card
         self.current_iset: Optional[Type[InformationSet]] = None
@@ -59,7 +59,7 @@ class Agent:
             "cumulative_strategy": self.cumulative_strategy,
         }
 
-    def get_current_action(self, iset):
+    def get_current_action(self, iset: Type[InformationSet]):
         action = np.random.choice(ACTIONS, p=self.current_iset.strategy)
         self.current_action = action
         return action
@@ -86,12 +86,12 @@ class KuhnPokerDealer:
         self.hand_terminated = False
         self.action_history = list()
 
-    def deal_cards(self):
+    def deal_cards(self) -> None:
         self.player_1.card = random.choice(self.deck)
         self.deck.remove(self.player_1.card)
         self.player_2.card = random.choice(self.deck)  # get card from deck at random
 
-    def return_higher_card_player(self) -> Agent:
+    def return_higher_card_player(self) -> Type[Agent]:
         if self.player_1.card > self.player_2.card:
             return self.player_1
         else:
