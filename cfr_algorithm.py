@@ -10,9 +10,7 @@ from classes import Agent, InformationSet, KuhnPokerDealer
 def run_cfr(
     iset: Type[InformationSet],
     player: Type[Agent],
-    opponent: Type[
-        Agent
-    ],  # we require opponent strategy for turns where it is not players turn
+    opponent: Type[Agent],
     episode: int,
     arrival_prob_1: float,
     arrival_prob_2: float,
@@ -48,9 +46,11 @@ def run_cfr(
                 1 / len(iset.legal_actions), len(iset.legal_actions)
             )
 
-    opponent_dc = deepcopy(
-        opponent
-    )  # we want to make copy of opponent to get current episodes strategy. we don't want to update the opponent passed to function call
+    # we want to make copy of opponent to get current episodes strategy.
+    # as opposed to referencing original opponent object
+    # we don't want to update the opponent object passed to function call
+    opponent_dc = deepcopy(opponent)
+
     _set_strategy_if_not_exists_and_players_turn(player)
     _set_strategy_if_not_exists_and_players_turn(opponent_dc)
 
