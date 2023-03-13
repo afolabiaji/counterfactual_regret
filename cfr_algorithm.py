@@ -20,14 +20,13 @@ def run_cfr(
         if iset.history[-1] == iset.history[-2]:
             if iset.history[-1].name == "pass":
                 # pass-pass
-                utility = 0
+                utility = +1
             elif iset.history[-1].name == "bet":
                 # pass-bet-bet
                 # bet-bet
                 utility = +2
 
             high_card_player = dealer.return_higher_card_player()
-
             return utility if player.label == high_card_player.label else -utility
         elif (iset.history[-2].name == "bet") and (iset.history[-1].name == "pass"):
             # pass-bet-pass
@@ -46,9 +45,10 @@ def run_cfr(
                 1 / len(iset.legal_actions), len(iset.legal_actions)
             )
 
-    # we want to make copy of opponent to get current episodes strategy.
+    # we want to make copy of opponent to get current episode's strategy.
     # as opposed to referencing original opponent object
-    # we don't want to update the opponent object passed to function call
+    # we don't want to update the original opponent object
+    # passed to run_cfr function call
     opponent_dc = deepcopy(opponent)
 
     _set_strategy_if_not_exists_and_players_turn(player)
