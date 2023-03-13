@@ -6,7 +6,7 @@ This algorithm is applied to Kuhn Poker, a toy model game. In this game there is
 
 Players ante one chip, and then the players take turns to bet. Each bet places an additional chip into the pot.
 
-If a player bets and the other player chooses to pass, the betting player wins the pot. If both players bet or both pass, then the player with the higher card wins the pot.
+If a player bets and the other player then directly afterwards chooses to pass, the betting player wins the pot. If both players bet or both pass, then the player with the higher card wins the pot.
 
 ## Running the algorithm
 
