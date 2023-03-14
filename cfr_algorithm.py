@@ -115,7 +115,7 @@ def run_cfr(
                 dealer,
             )
 
-    cfv = sum(active_strategy * cfv_action)
+    cfv = (active_strategy * cfv_action).sum()
 
     def _check_strategy_or_regret_exists(p):
         if iset_to_str not in p.cumulative_regret:
@@ -145,7 +145,7 @@ def run_cfr(
             list(map(lambda x: max(x, 0), player.cumulative_regret[iset_to_str]))
         )
         if sum(cumulative_regret) > 0:
-            player.strategy[iset_to_str] = cumulative_regret / sum(cumulative_regret)
+            player.strategy[iset_to_str] = cumulative_regret / cumulative_regret.sum()
         else:
             player.strategy[iset_to_str] = np.repeat(
                 1 / len(iset.legal_actions), len(iset.legal_actions)
