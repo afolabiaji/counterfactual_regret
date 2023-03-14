@@ -56,6 +56,12 @@ def run_cfr(
     iset_to_str = f"{str(iset.holding_card)}_{','.join([action.name[0] for action in iset.history])}"
 
     def _set_strategy_if_not_exists_and_players_turn(p):
+        """
+        A helper function to check if strategy or regret exists for the current player.
+        
+        Args:
+            p (Player): The current player.
+        """
         if (iset_to_str not in p.strategy) and (iset.active_player_label == p.label):
             p.strategy[iset_to_str] = np.repeat(
                 1 / len(iset.legal_actions), len(iset.legal_actions)
