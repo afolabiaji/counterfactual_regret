@@ -17,18 +17,21 @@ def run_cfr(
     dealer: Type[KuhnPokerDealer],
 ):
     """
-    The function that performs the Counterfactual Regret Minimization (CFR) algorithm for one iteration. The function takes the following arguments:
-  
-    Arguments
-
-    - iset: A Type[InformationSet] object representing the information set of the current player.
-    - player: A Type[Agent] object representing the current player.
-    - opponent: A Type[Agent] object representing the opponent player.
-    - episode: An int representing the current episode number.
-    - arrival_prob_1: A float representing the probability of player 1 arriving at this information set.
-    - arrival_prob_2: A float representing the probability of player 2 arriving at this information set.
-    - dealer: A Type[KuhnPokerDealer] object representing the dealer in the current game.
+    The function implements the counterfactual regret minimization algorithm.
+    
+    Args:
+        iset (InformationSet): The information set for the current player.
+        player (Player): The current player.
+        opponent (Player): The opponent player.
+        episode (int): The current episode number.
+        arrival_prob_1 (float): The arrival probability of player 1.
+        arrival_prob_2 (float): The arrival probability of player 2.
+        dealer (Dealer): The dealer object representing the game being played.
+        
+    Returns:
+        float: The counterfactual value for the current player and strategy.
     """
+    
     if len(iset.history) > 1:
         if iset.history[-1] == iset.history[-2]:
             if iset.history[-1].name == "pass":
