@@ -24,9 +24,9 @@ def run_cfr(
         player (Player): The current player.
         opponent (Player): The opponent player.
         episode (int): The current episode number.
-        arrival_prob_1 (float): The arrival probability of player 1.
-        arrival_prob_2 (float): The arrival probability of player 2.
-        dealer (Dealer): The dealer object representing the game being played.
+        arrival_prob_1: A float representing the probability of player 1 arriving at this information set.
+        arrival_prob_2: A float representing the probability of player 2 arriving at this information set.
+        dealer: A Type[KuhnPokerDealer] object representing the dealer in the current game.
         
     Returns:
         float: The counterfactual value for the current player and strategy.
