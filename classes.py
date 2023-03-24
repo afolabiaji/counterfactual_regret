@@ -50,9 +50,9 @@ class Agent:
         self.card: Optional[int] = None  # card
         self.current_iset: Optional[Type[InformationSet]] = None
         self.is_human: bool = is_human
-        self.strategy: Dict[Type[str], np.ndarray] = dict()
-        self.cumulative_regret: Dict[Type[str], np.ndarray] = dict()
-        self.cumulative_strategy: Dict[Type[str], np.ndarray] = dict()
+        self.strategy: Dict[str], Type[np.ndarray] = dict()
+        self.cumulative_regret: Dict[str], Type[np.ndarray] = dict()
+        self.cumulative_strategy: Dict[str], Type[np.ndarray] = dict()
         self.memory = {
             "strategy": self.strategy,
             "cumulative_regret": self.cumulative_regret,
